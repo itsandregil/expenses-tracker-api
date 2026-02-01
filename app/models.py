@@ -72,3 +72,11 @@ class TokenPayload(SQLModel):
 class Token(SQLModel):
     access_token: str
     token_type: str
+
+
+class ExpensesQueryParams(SQLModel):
+    offset: int = Field(0, ge=0)
+    limit: int = Field(100, gt=0, le=100)
+    start_date: datetime.date | None = None
+    finish_date: datetime.date | None = None
+    category: str | None = None

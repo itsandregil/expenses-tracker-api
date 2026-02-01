@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
-from app.models import User, UserCreate
+from app.models import Expense, User, UserCreate
 
 
 def get_user_by_id(*, session: Session, id: UUID) -> User | None:
@@ -33,3 +33,8 @@ def create_new_user(*, session: Session, user_create: UserCreate) -> User:
     session.commit()
     session.refresh(new_user)
     return new_user
+
+
+def get_expense_by_id(*, session: Session, expense_id: UUID) -> Expense | None:
+    expense = session.get(Expense, expense_id)
+    return expense
