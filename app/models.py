@@ -11,7 +11,7 @@ def get_datetime() -> datetime.datetime:
 
 class UserBase(SQLModel):
     full_name: str | None = Field(default=None, max_length=255)
-    email: EmailStr
+    email: EmailStr = Field(unique=True, index=True)
 
 
 class UserPublic(UserBase):
@@ -31,7 +31,7 @@ class User(UserBase, table=True):
     __tablename__: str = "users"
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    hash_password: str
+    hashed_password: str
     is_active: bool = True
     joined_at: datetime.datetime = Field(default_factory=get_datetime)
 
@@ -62,3 +62,13 @@ class Expense(SQLModel, table=True):
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID | None = Field(None, foreign_key="users.id")
+
+
+class TokenPayload(SQLModel):
+    sub: UUID
+    email: EmailStr
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str
