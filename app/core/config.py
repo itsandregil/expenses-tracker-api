@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     POSTGRES_DATABASE_URI: PostgresDsn
+    JWT_SECRET_KEY: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
 
 settings = Settings()  # pyright: ignore
