@@ -13,7 +13,9 @@ from app.core.db import engine
 from app.core.security import ALGORITHM
 from app.models import TokenPayload, User
 
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="/login/access-token")
+oauth_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+)
 
 
 def get_session() -> Generator[Session, None, None]:

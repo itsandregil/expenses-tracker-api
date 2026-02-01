@@ -57,7 +57,7 @@ class ExpenseUpdate(SQLModel):
     category: str | None = Field(default=None, max_length=50)
 
 
-class Expense(SQLModel, table=True):
+class Expense(ExpenseBase, table=True):
     __tablename__: str = "expenses"
 
     id: UUID = Field(default_factory=uuid4, primary_key=True)
