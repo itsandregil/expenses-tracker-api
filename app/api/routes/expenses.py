@@ -13,11 +13,11 @@ from sqlmodel import select
 
 from app import crud
 from app.api.dependencies import CurrentUserDep, SessionDep
+from app.api.params import ExpensesQueryParams
 from app.models import (
     Expense,
     ExpenseCreate,
     ExpensePublic,
-    ExpensesQueryParams,
     ExpenseUpdate,
     Message,
 )

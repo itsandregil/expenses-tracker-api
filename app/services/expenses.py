@@ -2,7 +2,8 @@ from fastapi import UploadFile
 from pydantic import ValidationError
 from sqlmodel import Session
 
-from app.models import Expense, ExpenseImport, User
+from app import crud
+from app.models import Expense, ExpenseImport, MonthlyReport, User
 from app.utils import get_reader_from_bytes_helper, normalize_row_helper
 
 
@@ -37,3 +38,17 @@ async def import_expenses_from_csv(*, session: Session, user: User, contents: by
         except ValidationError:
             continue
     session.commit()
+
+
+def get_monthly_expenses_report(
+    *, session: Session, user: User, year: int, month: int
+) -> MonthlyReport:
+    kwargs = {"session": session, "user": user, "year": year, "month": month}
+    total_count = crud.get_total_expenses(**kwargs)
+    total_amount = crud.get_total_amount_expended(**kwargs)
+    group_by_category = crud.get_total_expended_by_category(**kwargs)
+    return MonthlyReport(
+        total_expenses=total_count,
+        total_expended=total_amount,
+        by_category=group_by_category,
+    )

@@ -1,5 +1,14 @@
 import io
 from csv import DictReader
+from datetime import datetime, timezone
+
+
+def get_current_year() -> int:
+    return datetime.now(timezone.utc).year
+
+
+def get_current_month() -> int:
+    return datetime.now(timezone.utc).month
 
 
 def normalize_row_helper(row: dict[str, str]) -> dict[str, str]:

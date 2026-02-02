@@ -77,13 +77,11 @@ class Token(SQLModel):
     token_type: str
 
 
-class ExpensesQueryParams(SQLModel):
-    offset: int = Field(0, ge=0)
-    limit: int = Field(100, gt=0, le=100)
-    start_date: datetime.date | None = None
-    finish_date: datetime.date | None = None
-    category: str | None = None
-
-
 class Message(SQLModel):
     message: str
+
+
+class MonthlyReport(SQLModel):
+    total_expended: float
+    total_expenses: int
+    by_category: dict[str, float]
