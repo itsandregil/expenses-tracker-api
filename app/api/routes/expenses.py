@@ -1,7 +1,14 @@
 from typing import Annotated, Any
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    HTTPException,
+    Query,
+    UploadFile,
+    status,
+)
 from sqlmodel import select
 
 from app import crud
@@ -12,6 +19,12 @@ from app.models import (
     ExpensePublic,
     ExpensesQueryParams,
     ExpenseUpdate,
+    Message,
+)
+from app.services.expenses import (
+    check_file_has_valid_headers,
+    check_is_valid_csv_file,
+    import_expenses_from_csv,
 )
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
@@ -93,3 +106,25 @@ def delete_expense(
         )
     session.delete(expense)
     session.commit()
+
+
+@router.post("/import", status_code=status.HTTP_202_ACCEPTED)
+async def import_expenses_from_csv_file(
+    session: SessionDep,
+    current_user: CurrentUserDep,
+    expenses_file: UploadFile,
+    background_tasks: BackgroundTasks,
+) -> Message:
+    try:
+        check_is_valid_csv_file(expenses_file)
+        contents = await expenses_file.read()
+        check_file_has_valid_headers(contents)
+        background_tasks.add_task(
+            import_expenses_from_csv,
+            session=session,
+            user=current_user,
+            contents=contents,
+        )
+        return Message(message="File accepted")
+    except ValueError as err:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err))

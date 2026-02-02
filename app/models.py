@@ -37,10 +37,10 @@ class User(UserBase, table=True):
 
 
 class ExpenseBase(SQLModel):
-    description: str = Field(max_length=255)
+    description: str = Field(min_length=1, max_length=255)
     amount: float = Field(gt=0)
     date: datetime.date
-    category: str = Field(max_length=50)
+    category: str = Field(min_length=1, max_length=50)
 
 
 class ExpensePublic(ExpenseBase):
@@ -55,6 +55,9 @@ class ExpenseUpdate(SQLModel):
     amount: float | None = Field(default=None, gt=0)
     date: datetime.date | None = None
     category: str | None = Field(default=None, max_length=50)
+
+
+class ExpenseImport(ExpenseBase): ...
 
 
 class Expense(ExpenseBase, table=True):
@@ -80,3 +83,7 @@ class ExpensesQueryParams(SQLModel):
     start_date: datetime.date | None = None
     finish_date: datetime.date | None = None
     category: str | None = None
+
+
+class Message(SQLModel):
+    message: str
